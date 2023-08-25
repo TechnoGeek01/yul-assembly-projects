@@ -29,6 +29,21 @@ contract YulStorageOffsetsAndBitShifting {
         }
     }
 
+    function writeToC(uint16 newC) external {
+        assembly {
+            let c := sload(C.slot)
+            let clearedC := and(
+                c,
+                0xffff0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+            )
+
+            let shiftedNewC := shl(mul(C.offset, 8), newC)
+            let newVal := or(shiftedNewC, clearedC)
+
+            sstore(C.slot, newVal)
+        }
+    }
+
     // dangerous to do
     function writeValueToASlot(uint slot, uint value) external {
         assembly {
