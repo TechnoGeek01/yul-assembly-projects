@@ -15,6 +15,10 @@ contract YulArraysAndMappings {
         dynamicBigArray = [10, 20, 30];
         dynamicSmallArray = [11, 12, 13];
 
+        myMapping[10] = 5;
+        myMapping[11] = 6;
+        nestedMapping[2][4] = 7;
+
         addressToList[0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db] = [
             5345,
             3645,
@@ -54,7 +58,7 @@ contract YulArraysAndMappings {
         uint slot;
 
         assembly {
-            slot := dynamicBigArray.slot
+            slot := dynamicSmallArray.slot
         }
 
         bytes32 location = keccak256(abi.encode(slot));
@@ -72,6 +76,25 @@ contract YulArraysAndMappings {
         }
 
         bytes32 location = keccak256(abi.encode(key, uint(slot)));
+
+        assembly {
+            ret := sload(location)
+        }
+    }
+
+    function getNestedMapping() external view returns (uint ret) {
+        uint slot;
+
+        assembly {
+            slot := nestedMapping.slot
+        }
+
+        bytes32 location = keccak256(
+            abi.encode(
+                uint256(4),
+                keccak256(abi.encode(uint256(2), uint256(slot)))
+            )
+        );
 
         assembly {
             ret := sload(location)
