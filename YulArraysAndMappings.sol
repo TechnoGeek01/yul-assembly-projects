@@ -100,4 +100,46 @@ contract YulArraysAndMappings {
             ret := sload(location)
         }
     }
+
+    function lengthOfNestedList() external view returns (uint ret) {
+        uint slot;
+
+        assembly {
+            slot := addressToList.slot
+        }
+
+        bytes32 location = keccak256(
+            abi.encode(
+                address(0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db),
+                uint256(slot)
+            )
+        );
+
+        assembly {
+            ret := sload(location)
+        }
+    }
+
+    function getAddressToList(uint index) external view returns (uint ret) {
+        uint slot;
+
+        assembly {
+            slot := addressToList.slot
+        }
+
+        bytes32 location = keccak256(
+            abi.encode(
+                keccak256(
+                    abi.encode(
+                        address(0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db),
+                        uint256(slot)
+                    )
+                )
+            )
+        );
+
+        assembly {
+            ret := sload(add(location, index))
+        }
+    }
 }
